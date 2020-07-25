@@ -1,0 +1,6 @@
+/Users/mihaisolomon/Documents/Projects/Godot_Perspective_latest/.mono/temp/bin/Debug/Godot_Perspective_latest.dll
+/Users/mihaisolomon/Documents/Projects/Godot_Perspective_latest/.mono/temp/bin/Debug/Godot_Perspective_latest.pdb
+/Users/mihaisolomon/Documents/Projects/Godot_Perspective_latest/.mono/temp/obj/Debug/Godot_Perspective_latest.csprojAssemblyReference.cache
+/Users/mihaisolomon/Documents/Projects/Godot_Perspective_latest/.mono/temp/obj/Debug/Godot_Perspective_latest.csproj.CoreCompileInputs.cache
+/Users/mihaisolomon/Documents/Projects/Godot_Perspective_latest/.mono/temp/obj/Debug/Godot_Perspective_latest.dll
+/Users/mihaisolomon/Documents/Projects/Godot_Perspective_latest/.mono/temp/obj/Debug/Godot_Perspective_latest.pdb

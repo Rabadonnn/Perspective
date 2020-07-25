@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://LevelSettings.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Blocks/Block.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Blocks/Background.tscn" type="PackedScene" id=4]
+
+[node name="Level" type="Spatial"]
+
+[node name="LevelSettings" parent="." instance=ExtResource( 1 )]
+DeadYCoordinate = -25
+EnvColor = Color( 0.0980392, 0.137255, 0.352941, 1 )
+
+[node name="SpawnPoint" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.98017, 0 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Block" parent="." instance=ExtResource( 2 )]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0 )
+Ticking = true
+Ticking_DisabledTime = 3.0
+
+[node name="Block2" parent="." instance=ExtResource( 2 )]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -18.6263, 0 )
+
+[node name="Block3" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 2, 0, 0, 0, 2, 24.4648, -18.6263, 0 )
+
+[node name="Block4" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 2, 0, 0, 0, 2, 12.1785, -18.6263, 0 )
+
+[node name="Block5" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 2, 0, 0, 0, 2, 32.0318, -10.5725, 0 )
+
+[node name="Background" parent="." instance=ExtResource( 4 )]
+transform = Transform( 7, 0, 0, 0, 20, 0, 0, 0, 7, -24.9166, -24.6333, -20.3606 )
+
+[node name="Background2" parent="." instance=ExtResource( 4 )]
+transform = Transform( 7, 0, 0, 0, 20, 0, 0, 0, 7, -1.16591, -10.9689, -52.1691 )
+
+[node name="Background5" parent="." instance=ExtResource( 4 )]
+transform = Transform( 7, 0, 0, 0, 20, 0, 0, 0, 7, -1.16591, -45.0971, 12.1627 )
+
+[node name="Background6" parent="." instance=ExtResource( 4 )]
+transform = Transform( 7, 0, 0, 0, 20, 0, 0, 0, 7, 32.9886, -25.519, 23.9119 )
+
+[node name="Background3" parent="." instance=ExtResource( 4 )]
+transform = Transform( 7, 0, 0, 0, 20, 0, 0, 0, 7, 23.9416, -10.9689, -26.7177 )
+
+[node name="Background4" parent="." instance=ExtResource( 4 )]
+transform = Transform( 7, 0, 0, 0, 20, 0, 0, 0, 7, 46.8767, -20.1589, -10.7841 )

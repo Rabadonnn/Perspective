@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://LevelSettings.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Blocks/Block.tscn" type="PackedScene" id=2]
+
+[node name="Level" type="Spatial"]
+
+[node name="LevelSettings" parent="." instance=ExtResource( 1 )]
+DeadYCoordinate = -25
+EnvColor = Color( 0.435294, 0.290196, 0.556863, 1 )
+LightColor = Color( 0.133333, 0.121569, 0.231373, 1 )
+AmbientColor = Color( 0.694118, 0.0941176, 0.0941176, 1 )
+PlayerColor = Color( 0.921569, 0.921569, 0.921569, 1 )
+
+[node name="SpawnPoint" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.98017, 0 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Block" parent="." instance=ExtResource( 2 )]
+transform = Transform( 15, 0, 0, 0, 30, 0, 0, 0, 2, 0, -30, 0 )
