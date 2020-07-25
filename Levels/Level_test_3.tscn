@@ -9,11 +9,10 @@
 DeadYCoordinate = -25
 EnvColor = Color( 0.435294, 0.290196, 0.556863, 1 )
 LightColor = Color( 0.133333, 0.121569, 0.231373, 1 )
-AmbientColor = Color( 0.694118, 0.0941176, 0.0941176, 1 )
 PlayerColor = Color( 0.921569, 0.921569, 0.921569, 1 )
 
 [node name="SpawnPoint" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.98017, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
 
 [node name="Tween" type="Tween" parent="."]
 

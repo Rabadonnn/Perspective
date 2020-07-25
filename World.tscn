@@ -47,7 +47,7 @@ script = ExtResource( 6 )
 DebugLevel = ExtResource( 7 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.951057, 0.309017, 0, -0.309017, 0.951057, 0.0391006, 7.00251, 34.1681 )
+transform = Transform( 1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0.0391006, 7.00251, 34.1681 )
 environment = SubResource( 1 )
 current = true
 fov = 75.0

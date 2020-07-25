@@ -67,11 +67,12 @@ public class Player : KinematicBody
             velocity.y += jumpForce;
         }
 
-        if (Input.IsActionPressed("ui_left") || touchDir == -1)
+        CheckSlideInput();
+        if (Input.IsActionPressed("ui_left") || touchDir == -1 || slideDir == -1)
         {
             velocity.x -= horizontalAcceleration;
         }
-        else if (Input.IsActionPressed("ui_right") || touchDir == 1)
+        else if (Input.IsActionPressed("ui_right") || touchDir == 1 || slideDir == 1)
         {
             velocity.x += horizontalAcceleration;
         }
@@ -106,19 +107,53 @@ public class Player : KinematicBody
         }
     }
 
+    Vector2 lastPoint;
+    int slideDir = 0;
+    int slideThreshold = 20;
+    void CheckSlideInput()
+    {
+        var mouse = GetViewport().GetMousePosition();
+        if (Input.IsMouseButtonPressed((int)(ButtonList.Left)))
+        {
+            if (lastPoint == null)
+            {
+                lastPoint = mouse;
+            }
+            else
+            {
+                if (mouse.x - lastPoint.x > slideThreshold)
+                {
+                    slideDir = 1;
+                }
+                if (mouse.x - lastPoint.x < -slideThreshold)
+                {
+                    slideDir = -1;
+                }
+            }
+
+        }
+        if (!Input.IsMouseButtonPressed((int)(ButtonList.Left)))
+        {
+            lastPoint = mouse;
+            slideDir = 0;
+        }
+    }
+
     int touchDir = 0;
     public override void _Input(InputEvent @event)
     {
         if (@event is InputEventScreenTouch evt)
         {
             var vpw = GetViewport().Size.x;
+            touchDir = 0;
             if (evt.Position.x > vpw / 2)
             {
-                touchDir = 1;
+                touchDir += 1;
             }
-            else
+
+            if (evt.Position.x < vpw / 2)
             {
-                touchDir = -1;
+                touchDir -= 1;
             }
 
             if (!evt.Pressed)

@@ -15,7 +15,8 @@ public class World : Spatial
         if (DebugLevel != null)
         {
             ChangeLevel(DebugLevel);
-        } else
+        }
+        else
         {
             ChangeLevel((ResourceLoader.Load("Levels/Level_test.tscn") as PackedScene));
         }
@@ -31,20 +32,29 @@ public class World : Spatial
         CurrentLevel = lvl.Instance();
         AddChild(CurrentLevel);
 
-        var cam = GetNode<Camera>("Camera");
         var settings = CurrentLevel.GetNode<LevelSettings>("LevelSettings");
-        cam.Environment.BackgroundColor = settings.EnvColor;
-        cam.Environment.FogColor = settings.EnvColor;
-        cam.Environment.AmbientLightColor = settings.AmbientColor;
-        cam.Environment.GlowEnabled = settings.Glow;
-        var light = GetNode<DirectionalLight>("DirectionalLight");
-        light.LightColor = settings.LightColor;
+        SetLevelSettings(settings);
 
         LevelTimer = new Stopwatch();
     }
 
     void SetLevelSettings(LevelSettings settings)
     {
+        var cam = GetNode<Camera>("Camera");
+        cam.Environment.BackgroundColor = settings.EnvColor;
+        cam.Environment.FogColor = settings.EnvColor;
+        cam.Environment.AmbientLightColor = settings.AmbientColor;
+        cam.Environment.GlowEnabled = settings.Glow;
+        var light = GetNode<DirectionalLight>("DirectionalLight");
+        light.LightColor = settings.LightColor;
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        if (@event is InputEventMouseButton evt && evt.Pressed)
+        {
+            SetLevelSettings(CurrentLevel.GetNode<LevelSettings>("LevelSettings"));
+        }
     }
 
     void Restart()
