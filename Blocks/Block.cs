@@ -22,24 +22,19 @@ public class Block : MeshInstance
 
     Tween tween;
 
+    Vector3 velocity = Vector3.Zero; 
+
+    Vector3 initialPos;
+
     public override void _Ready()
     {
-        if (IsBad || IsPad)
-        {
-            tween = GetParent().GetParent().GetNode<Tween>("Tween");
-        }
-        else
-        {
+        tween = GetTree().Root.GetNode<Tween>("World/Tween");
 
-            tween = GetParent().GetNode<Tween>("Tween");
-        }
-
-        if (!IsPad)
-        {
-            InitMaterial();
-        }
+        InitMaterial();
 
         GetTree().Root.GetNode("World").GetNode<Player>("Player").Respawn += Reset;
+
+        initialPos = GlobalTransform.origin;
     }
 
     bool active = true;
@@ -49,6 +44,10 @@ public class Block : MeshInstance
         {
             SetActive(true);
             timer = Ticking_ActiveTime;
+            velocity = Vector3.Zero;
+            Translation = initialPos;
+            var mat = (MaterialOverride as SpatialMaterial);
+            mat.AlbedoColor = new Color(mat.AlbedoColor.r, mat.AlbedoColor.r, mat.AlbedoColor.b, 1);
         }
     }
 
@@ -64,20 +63,33 @@ public class Block : MeshInstance
                 timer = active ? Ticking_ActiveTime : Ticking_DisabledTime;
             }
         }
+
+        if (DisableAfterTouch && Translation.y > -100)
+        {
+            Translation += velocity * delta;
+        }
     }
 
-    public void SetActive(bool _active)
+    public void SetActive(bool _active, float easeTime = 0.1f)
     {
         GetNode<StaticBody>("StaticBody").GetNode<CollisionShape>("CollisionShape").Disabled = !_active;
         if (_active)
         {
-            SetTransparency(1f, Tween.EaseType.In, 0.1f);
+            SetTransparency(1f, Tween.EaseType.In, easeTime);
         }
         else
         {
-            SetTransparency(0f, Tween.EaseType.Out, 0.1f);
+            SetTransparency(0f, Tween.EaseType.Out, easeTime);
         }
     }
+
+    int fallSpeed = 50;
+    public void MakeItFall()
+    {
+        SetActive(false, 2f);
+        velocity = new Vector3(0, -fallSpeed, 0);
+    }
+
 
     void InitMaterial()
     {

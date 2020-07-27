@@ -32,12 +32,12 @@ public class Transition : ColorRect
         }
     }
 
-    float offset1Duration = 0.7f;
-    float offset2Duration = 0.3f;
+    float offset1Duration = 0.9f;
+    float offset2Duration = 0.4f;
 
     public override void _Ready()
     {
-        tween = GetParent().GetNode<Tween>("Tween");
+        tween = GetTree().Root.GetNode("World").GetNode<Tween>("Tween");
         transitionShader = (ShaderMaterial)Material;
         GetTree().Root.GetNode("World").GetNode<Player>("Player").CalibrateCamera += ScreenTransition;
     }

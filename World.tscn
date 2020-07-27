@@ -47,7 +47,7 @@ script = ExtResource( 6 )
 DebugLevel = ExtResource( 7 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 0.984808, 0.173648, 0, -0.173648, 0.984808, 0.0391006, 7.00251, 34.1681 )
+transform = Transform( 0.999848, 0.00303058, -0.0171873, 0, 0.984808, 0.173648, 0.0174524, -0.173622, 0.984658, 0.0391006, 7.00251, 34.1681 )
 environment = SubResource( 1 )
 current = true
 fov = 75.0
@@ -62,6 +62,8 @@ maxHorizontalSpeed = 20
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 33.7426, 0 )
 light_color = Color( 0.133333, 0.121569, 0.231373, 1 )
 script = ExtResource( 4 )
+
+[node name="Tween" type="Tween" parent="."]
 
 [node name="UI" type="Control" parent="."]
 anchor_right = 1.0
@@ -80,14 +82,23 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Tween" type="Tween" parent="UI"]
-
 [node name="TimerLabel" type="Label" parent="UI"]
 margin_left = 10.0
 margin_top = 10.0
-margin_right = 99.0
-margin_bottom = 41.0
+margin_right = 100.0
+margin_bottom = 40.0
 text = "level timer
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DebugLabel" type="Label" parent="UI"]
+margin_left = 10.4047
+margin_top = 40.0
+margin_right = 100.0
+margin_bottom = 70.0
+text = "debug label
 "
 __meta__ = {
 "_edit_use_anchors_": false

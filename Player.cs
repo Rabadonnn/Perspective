@@ -12,13 +12,12 @@ public class Player : KinematicBody
     int maxHorizontalSpeed = 18;
     float xFriction = 0.5f;
 
-    public delegate void CameraCalibrateEvent();
-    public delegate void RespawnEvent();
+    public delegate void PlayerEvent();
 
-    public event RespawnEvent Respawn;
+    public event PlayerEvent Respawn;
 
-    public event CameraCalibrateEvent CalibrateCamera;
-    public event CameraCalibrateEvent CalibrateCameraY;
+    public event PlayerEvent CalibrateCamera;
+    public event PlayerEvent CalibrateCameraY;
 
     Vector3 velocity = new Vector3();
 
@@ -30,10 +29,14 @@ public class Player : KinematicBody
 
     public Vector3 LowestPoint { get; private set; } = Vector3.Zero;
 
+    Label debugLabel;
+
     public override void _Ready()
     {
         level = (Spatial)GetParent<World>().CurrentLevel;
         SetLevelSettings();
+
+        debugLabel = GetNode<Label>("../UI/DebugLabel");
     }
 
     void SetLevelSettings()
@@ -68,11 +71,11 @@ public class Player : KinematicBody
         }
 
         CheckSlideInput();
-        if (Input.IsActionPressed("ui_left") || touchDir == -1 || slideDir == -1)
+        if (Input.IsActionPressed("ui_left") || slideDir == -1)
         {
             velocity.x -= horizontalAcceleration;
         }
-        else if (Input.IsActionPressed("ui_right") || touchDir == 1 || slideDir == 1)
+        else if (Input.IsActionPressed("ui_right") || slideDir == 1)
         {
             velocity.x += horizontalAcceleration;
         }
@@ -109,7 +112,7 @@ public class Player : KinematicBody
 
     Vector2 lastPoint;
     int slideDir = 0;
-    int slideThreshold = 20;
+    int slideThreshold = 100;
     void CheckSlideInput()
     {
         var mouse = GetViewport().GetMousePosition();
@@ -139,27 +142,10 @@ public class Player : KinematicBody
         }
     }
 
-    int touchDir = 0;
     public override void _Input(InputEvent @event)
     {
         if (@event is InputEventScreenTouch evt)
         {
-            var vpw = GetViewport().Size.x;
-            touchDir = 0;
-            if (evt.Position.x > vpw / 2)
-            {
-                touchDir += 1;
-            }
-
-            if (evt.Position.x < vpw / 2)
-            {
-                touchDir -= 1;
-            }
-
-            if (!evt.Pressed)
-            {
-                touchDir = 0;
-            }
         }
     }
 
@@ -203,16 +189,16 @@ public class Player : KinematicBody
                 {
                     ShouldKill = true;
                 }
-                else if (block.DisableAfterTouch)
+                else if (block.DisableAfterTouch && IsOnFloor())
                 {
-                    block.SetActive(false);
+                    block.MakeItFall();
                 }
-            }
 
-            if (collision.Collider is StaticBody body && IsOnFloor())
-            {
-                LowestPoint = GlobalTransform.origin;
-                CalibrateCameraY?.Invoke();
+                if (IsOnFloor() && !block.DisableAfterTouch && !block.Ticking && !block.IsPad && !block.IsBad)
+                {
+                    LowestPoint = GlobalTransform.origin;
+                    CalibrateCameraY?.Invoke();
+                }
             }
         }
     }

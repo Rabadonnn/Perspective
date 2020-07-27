@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://LevelSettings.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Blocks/Block.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Blocks/Background.tscn" type="PackedScene" id=3]
 
 [node name="Level" type="Spatial"]
 
@@ -14,7 +15,41 @@ PlayerColor = Color( 0.921569, 0.921569, 0.921569, 1 )
 [node name="SpawnPoint" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0 )
 
-[node name="Tween" type="Tween" parent="."]
-
 [node name="Block" parent="." instance=ExtResource( 2 )]
-transform = Transform( 15, 0, 0, 0, 30, 0, 0, 0, 2, 0, -30, 0 )
+transform = Transform( 15, 0, 0, 0, 30, 0, 0, 0, 3, 0, -30, 0 )
+
+[node name="Block2" parent="." instance=ExtResource( 2 )]
+transform = Transform( 10, 0, 0, 0, 30, 0, 0, 0, 3, 31, -24, 0 )
+
+[node name="Block4" parent="." instance=ExtResource( 2 )]
+transform = Transform( -1.62921e-06, 0, 3, 0, 30, 0, -10, 0, -4.88762e-07, 84, -15, -21 )
+IsPad = true
+
+[node name="Block3" parent="." instance=ExtResource( 2 )]
+transform = Transform( 2, 0, 0, 0, 3, 0, 0, 0, 3, 51, 8, 0 )
+DisableAfterTouch = true
+
+[node name="Block9" parent="." instance=ExtResource( 2 )]
+transform = Transform( 2, 0, 0, 0, 3, 0, 0, 0, 3, 71, 8, 0 )
+DisableAfterTouch = true
+
+[node name="Block7" parent="." instance=ExtResource( 2 )]
+transform = Transform( 2, 0, 0, 0, 3, 0, 0, 0, 3, 61, 8, 0 )
+DisableAfterTouch = true
+
+[node name="Block8" parent="." instance=ExtResource( 2 )]
+transform = Transform( 3, 0, 0, 0, 2, 0, 0, 0, 3, 84, 13, 0 )
+IsPad = true
+DisableAfterTouch = true
+
+[node name="Background" parent="." instance=ExtResource( 3 )]
+transform = Transform( 10, 0, 0, 0, 25, 0, 0, 0, 10, -8, -21, -39 )
+
+[node name="Background2" parent="." instance=ExtResource( 3 )]
+transform = Transform( 10, 0, 0, 0, 25, 0, 0, 0, 10, 53, -26, -15 )
+
+[node name="Background3" parent="." instance=ExtResource( 3 )]
+transform = Transform( 10, 0, 0, 0, 25, 0, 0, 0, 10, 70, -14, -45 )
+
+[node name="Background4" parent="." instance=ExtResource( 3 )]
+transform = Transform( 10, 0, 0, 0, 25, 0, 0, 0, 10, 26, -3, -25 )
