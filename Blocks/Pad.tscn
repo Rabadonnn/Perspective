@@ -1,13 +1,35 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Blocks/Block.tscn" type="PackedScene" id=1]
-
+[ext_resource path="res://Blocks/Pad.cs" type="Script" id=2]
 
 [sub_resource type="SpatialMaterial" id=1]
-flags_unshaded = true
+flags_transparent = true
+vertex_color_use_as_albedo = true
+
+[sub_resource type="CubeMesh" id=2]
+material = SubResource( 1 )
+
+[sub_resource type="Curve" id=3]
+_data = [ Vector2( 0, 0.823522 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.170266 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=4]
+colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0.192157 )
+
+[sub_resource type="SpatialMaterial" id=5]
 
 [node name="Pad" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="CPUParticles" type="CPUParticles" parent="."]
+speed_scale = 0.4
+mesh = SubResource( 2 )
+direction = Vector3( 0, 0, 0 )
+gravity = Vector3( 0, -10, 0 )
+linear_accel = 5.38
+scale_amount_curve = SubResource( 3 )
+color_ramp = SubResource( 4 )
 
 [node name="Block" parent="." instance=ExtResource( 1 )]
-material/0 = SubResource( 1 )
+material/0 = SubResource( 5 )
 IsPad = true

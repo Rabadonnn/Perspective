@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Transition.cs" type="Script" id=2]
@@ -17,6 +17,9 @@ fog_height_enabled = true
 fog_height_min = -10.0
 fog_height_max = -40.0
 fog_height_curve = 0.5
+dof_blur_near_enabled = true
+dof_blur_near_distance = 1.3
+dof_blur_near_amount = 0.3
 glow_intensity = 3.0
 glow_bloom = 0.1
 glow_blend_mode = 0
@@ -41,6 +44,15 @@ void fragment() {
 shader = SubResource( 2 )
 shader_param/offset1 = 0.0
 shader_param/offset2 = 0.0
+
+[sub_resource type="DynamicFontData" id=4]
+font_path = "res://roboto/Roboto-Thin.ttf"
+
+[sub_resource type="DynamicFont" id=5]
+size = 40
+use_mipmaps = true
+use_filter = true
+font_data = SubResource( 4 )
 
 [node name="World" type="Spatial"]
 script = ExtResource( 6 )
@@ -100,6 +112,32 @@ margin_right = 100.0
 margin_bottom = 70.0
 text = "debug label
 "
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MainMenu" type="Control" parent="UI"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -0.578857
+margin_right = -0.578857
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="UI/MainMenu"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -101.0
+margin_top = -24.0
+margin_right = 101.0
+margin_bottom = 24.0
+custom_fonts/font = SubResource( 5 )
+text = "Perspective"
+align = 1
+valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }

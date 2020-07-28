@@ -12,15 +12,23 @@ public class Camera : Godot.Camera
 
     float i_RotationY;
 
+    RandomNumberGenerator random;
+
     public override void _Ready()
     {
+        random = new RandomNumberGenerator();
         tween = new Tween();
         AddChild(tween);
 
         player = GetNode<Player>("../Player");
         Translation = Vector3.Zero;
+
         player.CalibrateCamera += Calibrate;
         player.CalibrateCameraY += CalibrateY;
+        player.GroundHit += () =>
+        {
+            shake = true;
+        };
 
         Calibrate();
         CalibrateY();
@@ -42,12 +50,59 @@ public class Camera : Godot.Camera
         tween.Start();
     }
 
-    public override void _PhysicsProcess(float delta)
+    Vector3 lastRotation;
+    bool shake = false;
+    float shakeCd = 0.05f;
+    float c_shakeCd = 0.08f;
+
+    float shakeAmount = 0.6f;
+
+    void UpdateShake(float delta)
+    {
+        if (shake)
+        {
+            c_shakeCd -= delta;
+
+            if (lastRotation != null)
+            {
+                RotationDegrees = lastRotation;
+            }
+            lastRotation = RotationDegrees;
+
+            var x = random.RandfRange(-shakeAmount, shakeAmount);
+            var y = random.RandfRange(-shakeAmount, shakeAmount);
+            var z = random.RandfRange(-shakeAmount, shakeAmount);
+            var offset = new Vector3(x, y, z);
+
+            RotationDegrees += offset;
+
+            if (c_shakeCd < 0)
+            {
+                shake = false;
+                c_shakeCd = shakeCd;
+                // to prevent the rotation from not resetting when the c_shakeCd is too small
+                RotationDegrees = lastRotation;
+            }
+        }
+    }
+
+    public override void _Process(float delta)
     {
         var t = Translation;
         var pt = player.Translation;
 
         t = t.LinearInterpolate(new Vector3(pt.x, t.y, t.z), lerpSpeed);
         Translation = t;
+
+        UpdateShake(delta);
+    }
+
+    public bool Blurred
+    {
+        get => Environment.DofBlurNearEnabled;
+        set
+        {
+            Environment.DofBlurNearEnabled = value;    
+        }
     }
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Player.cs" type="Script" id=1]
 
@@ -9,6 +9,20 @@ flags_unshaded = true
 
 [sub_resource type="SphereShape" id=3]
 
+[sub_resource type="SpatialMaterial" id=4]
+flags_transparent = true
+flags_unshaded = true
+vertex_color_use_as_albedo = true
+
+[sub_resource type="SphereMesh" id=5]
+material = SubResource( 4 )
+
+[sub_resource type="Curve" id=6]
+_data = [ Vector2( 0, 0.79793 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.207207 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=7]
+colors = PoolColorArray( 1, 1, 1, 0.662745, 1, 1, 1, 0 )
+
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 1 )
 
@@ -18,3 +32,11 @@ material/0 = SubResource( 2 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 shape = SubResource( 3 )
+
+[node name="CPUParticles" type="CPUParticles" parent="."]
+lifetime = 0.2
+local_coords = false
+mesh = SubResource( 5 )
+linear_accel = 3.0
+scale_amount_curve = SubResource( 6 )
+color_ramp = SubResource( 7 )

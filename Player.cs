@@ -15,9 +15,9 @@ public class Player : KinematicBody
     public delegate void PlayerEvent();
 
     public event PlayerEvent Respawn;
-
     public event PlayerEvent CalibrateCamera;
     public event PlayerEvent CalibrateCameraY;
+    public event PlayerEvent GroundHit;
 
     Vector3 velocity = new Vector3();
 
@@ -45,6 +45,18 @@ public class Player : KinematicBody
         DeadYCoordinate = lvlSettings.DeadYCoordinate;
         var mesh = GetNode<MeshInstance>("Mesh");
         (mesh.GetSurfaceMaterial(0) as SpatialMaterial).AlbedoColor = lvlSettings.PlayerColor;
+
+        var particles = GetNode<CPUParticles>("CPUParticles");
+        var oldColors = particles.ColorRamp.Colors;
+        var newColors = new Color[]
+        {
+            new Color(lvlSettings.PlayerColor.r, lvlSettings.PlayerColor.g, lvlSettings.PlayerColor.b, 0.8f),
+            new Color(lvlSettings.PlayerColor.r, lvlSettings.PlayerColor.g, lvlSettings.PlayerColor.b, 0)
+        };
+        particles.ColorRamp = new Gradient()
+        {
+            Colors = newColors
+        };
     }
 
     bool firstReset = false;
@@ -60,6 +72,27 @@ public class Player : KinematicBody
             firstReset = true;
         }
 
+        if (!ShouldKill)
+        {
+            Jump();
+            Move();
+            MoveAndSlide(velocity, Vector3.Up);
+            CheckForCollisions();
+        }
+
+        if (GlobalTransform.origin.y < DeadYCoordinate)
+        {
+            ShouldKill = true;
+        }
+
+        if (ShouldKill)
+        {
+            Reset();
+        }
+    }
+
+    void Jump()
+    {
         if (!IsOnFloor())
         {
             velocity.y -= gravity;
@@ -68,8 +101,12 @@ public class Player : KinematicBody
         {
             velocity.y = 0;
             velocity.y += jumpForce;
+            GroundHit?.Invoke();
         }
+    }
 
+    void Move()
+    {
         CheckSlideInput();
         if (Input.IsActionPressed("ui_left") || slideDir == -1)
         {
@@ -92,22 +129,6 @@ public class Player : KinematicBody
         }
 
         velocity.x = Mathf.Clamp(velocity.x, -maxHorizontalSpeed, maxHorizontalSpeed);
-
-        if (!ShouldKill)
-        {
-            MoveAndSlide(velocity, Vector3.Up);
-            CheckForCollisions();
-        }
-
-        if (GlobalTransform.origin.y < DeadYCoordinate)
-        {
-            ShouldKill = true;
-        }
-
-        if (ShouldKill)
-        {
-            Reset();
-        }
     }
 
     Vector2 lastPoint;
@@ -159,10 +180,11 @@ public class Player : KinematicBody
         velocity = Vector3.Zero;
         Respawn?.Invoke();
         RotationDir = 1;
-        MakeBlocksTransparent();
         Visible = true;
         CalibrateCamera?.Invoke();
     }
+
+    Block lastPad;
 
     void CheckForCollisions()
     {
@@ -174,16 +196,19 @@ public class Player : KinematicBody
                 var block = node.GetParent<Block>();
                 if (block.IsPad)
                 {
-                    level.Rotate(Vector3.Up, Mathf.Deg2Rad(90 * RotationDir));
-                    RotationDir *= -1;
-                    var pad = node.GetParent<Block>();
+                    if (lastPad == null)
+                    {
+                        level.Rotate(Vector3.Up, Mathf.Deg2Rad(90 * RotationDir));
+                        RotationDir *= -1;
+                        var pad = node.GetParent<Block>();
 
-                    Translation = new Vector3(pad.GlobalTransform.origin.x, Translation.y, pad.GlobalTransform.origin.z);
-                    velocity = Vector3.Zero;
+                        Translation = new Vector3(pad.GlobalTransform.origin.x, Translation.y, pad.GlobalTransform.origin.z);
+                        velocity = Vector3.Zero;
 
-                    CalibrateCamera?.Invoke();
-
-                    MakeBlocksTransparent();
+                        CalibrateCamera?.Invoke();
+                        lastPad = block;
+                        velocity.x = 0;
+                    }
                 }
                 else if (block.IsBad)
                 {
@@ -194,53 +219,15 @@ public class Player : KinematicBody
                     block.MakeItFall();
                 }
 
-                if (IsOnFloor() && !block.DisableAfterTouch && !block.Ticking && !block.IsPad && !block.IsBad)
+                if (IsOnFloor() && !block.DisableAfterTouch && !block.IsBad)
                 {
                     LowestPoint = GlobalTransform.origin;
                     CalibrateCameraY?.Invoke();
                 }
-            }
-        }
-    }
 
-    void SetBlockMinTransparency(Block b)
-    {
-        b.SetTransparency(MinBlockTransparency, Tween.EaseType.Out, 0.8f);
-    }
-    void SetBlockMaxTransparency(Block b)
-    {
-        b.SetTransparency(1f, Tween.EaseType.In, 0.3f);
-    }
-
-    void MakeBlocksTransparent()
-    {
-        var nodes = level.GetChildren();
-
-        foreach (var node in nodes)
-        {
-            if (node is Block block && !block.IsPad)
-            {
-                if (RotationDir == 1)
+                if (!block.IsPad)
                 {
-                    if (block.RotationDegrees.y == 90)
-                    {
-                        SetBlockMinTransparency(block);
-                    }
-                    else
-                    {
-                        SetBlockMaxTransparency(block);
-                    }
-                }
-                else if (RotationDir == -1)
-                {
-                    if (block.RotationDegrees.y == 0)
-                    {
-                        SetBlockMinTransparency(block);
-                    }
-                    else
-                    {
-                        SetBlockMaxTransparency(block);
-                    }
+                    lastPad = null;
                 }
             }
         }
