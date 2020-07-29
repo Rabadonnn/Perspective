@@ -34,6 +34,8 @@ public class Camera : Godot.Camera
         CalibrateY();
 
         i_RotationY = RotationDegrees.y;
+
+        SetBlur(!Blurred, 1f);
     }
 
     void Calibrate()
@@ -95,14 +97,42 @@ public class Camera : Godot.Camera
         Translation = t;
 
         UpdateShake(delta);
+
+        if (c_blurringTime > 0)
+        {
+            c_blurringTime -= delta;
+            if (c_blurringTime < 0)
+            {
+                if (Environment.DofBlurNearAmount == 0)
+                {
+                    Environment.DofBlurNearEnabled = false;
+                }
+                SetBlur(!Blurred, 1f);
+            }
+        }
     }
 
-    public bool Blurred
+    float maxBlur = 0.3f;
+    float minBlur = 0.0f;
+    float c_blurringTime;
+
+    public bool Blurred => Environment.DofBlurNearEnabled;
+
+    public void SetBlur(bool value, float duration)
     {
-        get => Environment.DofBlurNearEnabled;
-        set
+        if (value)
         {
-            Environment.DofBlurNearEnabled = value;    
+            if (!Blurred)
+            {
+                Environment.DofBlurNearEnabled = true;
+            }
+            tween.InterpolateProperty(Environment, "dof_blur_near_amount", minBlur, maxBlur, duration, Tween.TransitionType.Linear, Tween.EaseType.In, 0);
         }
+        else
+        {
+            tween.InterpolateProperty(Environment, "dof_blur_near_amount", maxBlur, minBlur, duration, Tween.TransitionType.Linear, Tween.EaseType.Out, 0);
+        }
+        c_blurringTime = duration;
+        tween.Start();
     }
 }

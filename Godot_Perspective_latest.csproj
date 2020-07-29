@@ -60,6 +60,7 @@
     <Compile Include="Blocks\Pad.cs" />
     <Compile Include="DirectionalLight.cs" />
     <Compile Include="Blocks/Block.cs" />
+    <Compile Include="StateManager.cs" />
     <Compile Include="World.cs" />
     <Compile Include="UI.cs" />
     <Compile Include="Transition.cs" />

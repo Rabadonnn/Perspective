@@ -12,10 +12,15 @@ public class UI : Control
         timerLabel = GetNode<Label>("TimerLabel");
     }
 
+    public bool ShowTimer { get; set; } = false;
+
     public override void _Process(float delta)
     {
-        var ts = world.LevelTimer.Elapsed;
-        var timeText = String.Format("{0:00}:{1:00}:{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds.ToString().Substr(0, 2));
-        timerLabel.Text = timeText;
+        if (ShowTimer)
+        {
+            var ts = world.LevelTimer.Elapsed;
+            var timeText = String.Format("{0:00}:{1:00}:{2:00}", ts.Minutes, ts.Seconds, ts.Milliseconds.ToString().Substr(0, 2));
+            timerLabel.Text = timeText;
+        }
     }
 }

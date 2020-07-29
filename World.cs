@@ -3,6 +3,8 @@ using System.Diagnostics;
 
 public class World : Spatial
 {
+    public StateManager stateManager;
+
     public Node CurrentLevel { get; private set; }
 
     public Stopwatch LevelTimer { get; private set; }
@@ -10,21 +12,14 @@ public class World : Spatial
     [Export]
     public PackedScene DebugLevel { get; set; }
 
-    public override void _EnterTree()
-    {
-        if (DebugLevel != null)
-        {
-            ChangeLevel(DebugLevel);
-        }
-        else
-        {
-            ChangeLevel((ResourceLoader.Load("Levels/Level_test.tscn") as PackedScene));
-        }
-    }
+    Player player;
 
     public override void _Ready()
     {
-        GetNode<Player>("Player").Respawn += Restart;
+        player = GetNode<Player>("Player");
+        player.SetPhysicsProcess(false);
+
+        ChangeLevel(DebugLevel);
     }
 
     void ChangeLevel(PackedScene lvl)
@@ -34,6 +29,8 @@ public class World : Spatial
 
         var settings = CurrentLevel.GetNode<LevelSettings>("LevelSettings");
         SetLevelSettings(settings);
+
+        player.InitializeLevel(CurrentLevel as Spatial, settings);
 
         LevelTimer = new Stopwatch();
     }
@@ -47,14 +44,6 @@ public class World : Spatial
         cam.Environment.GlowEnabled = settings.Glow;
         var light = GetNode<DirectionalLight>("DirectionalLight");
         light.LightColor = settings.LightColor;
-    }
-
-    public override void _Input(InputEvent @event)
-    {
-        if (@event is InputEventMouseButton evt && evt.Pressed)
-        {
-            SetLevelSettings(CurrentLevel.GetNode<LevelSettings>("LevelSettings"));
-        }
     }
 
     void Restart()

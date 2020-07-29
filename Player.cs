@@ -25,7 +25,7 @@ public class Player : KinematicBody
 
     public int DeadYCoordinate { get; private set; } = -10;
 
-    Spatial level;
+    public Spatial Level { get; set; }
 
     public Vector3 LowestPoint { get; private set; } = Vector3.Zero;
 
@@ -33,15 +33,31 @@ public class Player : KinematicBody
 
     public override void _Ready()
     {
-        level = (Spatial)GetParent<World>().CurrentLevel;
-        SetLevelSettings();
-
         debugLabel = GetNode<Label>("../UI/DebugLabel");
     }
 
-    void SetLevelSettings()
+    public void InitializeLevel(Spatial levelNode, LevelSettings levelSettings)
     {
-        var lvlSettings = level.GetNode<LevelSettings>("LevelSettings");
+        Level = levelNode;
+        SetLevelSettings(levelSettings);
+        Reset();
+        SetPhysicsProcess(true);
+    }
+
+    public void Reset()
+    {
+        Level.Rotation = Vector3.Zero;
+        Translation = Level.GetNode<Spatial>("SpawnPoint").GlobalTransform.origin;
+        ShouldKill = false;
+        velocity = Vector3.Zero;
+        Respawn?.Invoke();
+        RotationDir = 1;
+        Visible = true;
+        CalibrateCamera?.Invoke();
+    }
+
+    public void SetLevelSettings(LevelSettings lvlSettings)
+    {
         DeadYCoordinate = lvlSettings.DeadYCoordinate;
         var mesh = GetNode<MeshInstance>("Mesh");
         (mesh.GetSurfaceMaterial(0) as SpatialMaterial).AlbedoColor = lvlSettings.PlayerColor;
@@ -59,19 +75,11 @@ public class Player : KinematicBody
         };
     }
 
-    bool firstReset = false;
-
     [Export]
     public float MinBlockTransparency { get; set; } = 0.2f;
 
     public override void _PhysicsProcess(float delta)
     {
-        if (!firstReset)
-        {
-            Reset();
-            firstReset = true;
-        }
-
         if (!ShouldKill)
         {
             Jump();
@@ -172,18 +180,6 @@ public class Player : KinematicBody
 
     public bool ShouldKill { get; set; } = false;
 
-    void Reset()
-    {
-        ShouldKill = false;
-        level.Rotation = Vector3.Zero;
-        Translation = level.GetNode<Spatial>("SpawnPoint").GlobalTransform.origin;
-        velocity = Vector3.Zero;
-        Respawn?.Invoke();
-        RotationDir = 1;
-        Visible = true;
-        CalibrateCamera?.Invoke();
-    }
-
     Block lastPad;
 
     void CheckForCollisions()
@@ -198,7 +194,7 @@ public class Player : KinematicBody
                 {
                     if (lastPad == null)
                     {
-                        level.Rotate(Vector3.Up, Mathf.Deg2Rad(90 * RotationDir));
+                        Level.Rotate(Vector3.Up, Mathf.Deg2Rad(90 * RotationDir));
                         RotationDir *= -1;
                         var pad = node.GetParent<Block>();
 
